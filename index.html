@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>《大衍往事》情境牌</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f7f6f2; color: #1a1a1a; min-height: 100vh; padding: 2rem 1rem; }
+  .container { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 22px; font-weight: 500; margin-bottom: 4px; }
+  .subtitle { font-size: 13px; color: #888; margin-bottom: 1.5rem; }
+  .deck { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
+  .mini-card {
+    background: #fff;
+    border: 1px solid #e8e6e0;
+    border-radius: 12px;
+    padding: 1rem 0.75rem;
+    cursor: pointer;
+    text-align: center;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .mini-card:hover { border-color: #aaa; }
+  .mini-card.active { border: 2px solid #7F77DD; box-shadow: 0 0 0 3px #EEEDFE; }
+  .mini-card .num { font-size: 11px; color: #aaa; margin-bottom: 6px; letter-spacing: 0.08em; }
+  .mini-card .glyph { font-size: 24px; margin-bottom: 8px; line-height: 1; }
+  .mini-card .theme { font-size: 13px; font-weight: 500; }
+  .mini-card .sub { font-size: 11px; color: #888; margin-top: 3px; }
+  .detail {
+    background: #fff;
+    border: 1px solid #e8e6e0;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .detail-header { display: flex; align-items: center; gap: 14px; margin-bottom: 1.25rem; }
+  .detail-glyph { font-size: 40px; line-height: 1; }
+  .detail-num { font-size: 11px; color: #aaa; letter-spacing: 0.1em; margin-bottom: 4px; }
+  .detail-title { font-size: 20px; font-weight: 500; }
+  .detail-subtitle { font-size: 13px; color: #888; margin-top: 2px; }
+  .tag { display: inline-block; font-size: 11px; padding: 3px 10px; border-radius: 99px; margin-right: 6px; margin-bottom: 8px; background: #EEEDFE; color: #3C3489; }
+  .section-label { font-size: 11px; font-weight: 500; color: #aaa; letter-spacing: 0.1em; text-transform: uppercase; margin: 1.25rem 0 0.5rem; }
+  .passage { font-family: Georgia, 'Times New Roman', serif; font-size: 15px; line-height: 1.9; border-left: 2px solid #AFA9EC; padding-left: 1rem; }
+  .annotation { font-size: 14px; line-height: 1.75; color: #555; }
+  .nav { display: flex; gap: 8px; flex-wrap: wrap; }
+  .nav button {
+    font-size: 13px; padding: 7px 16px; border-radius: 8px;
+    border: 1px solid #ddd; background: #fff; cursor: pointer;
+    transition: background 0.1s;
+  }
+  .nav button:hover { background: #f0f0f0; }
+  footer { text-align: center; font-size: 12px; color: #bbb; margin-top: 2rem; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>《大衍往事》情境牌</h1>
+  <p class="subtitle">點選任一張牌，展開段落與注解。</p>
+
+  <div class="deck" id="deck"></div>
+  <div class="detail" id="detail"></div>
+
+  <div class="nav">
+    <button onclick="navigate(-1)">← 上一張</button>
+    <button onclick="navigate(1)">下一張 →</button>
+  </div>
+
+  <footer style="margin-top:2rem;">《大衍往事》· YEH1208</footer>
+</div>
+
+<script>
+const cards = [
+  {
+    id: '005', glyph: '◈', theme: '恐懼', sub: '最深處的凝視',
+    tags: ['陸沉淵', '內在', '轉折'],
+    passage: '他站在城樓之上，風從北方吹來，帶著某種他不敢命名的氣息。那不是死亡，卻比死亡更令他窒息——是失去的預感，是愛的反面，是一個人在黑暗中獨自清醒的恐懼。',
+    annotation: '這張牌對應陸沉淵在故事前段的內心狀態。他習慣以沉默掩蓋情感，而恐懼是最早洩露他真實自我的裂縫。建議在初次衝突後的場景插入此段，作為情緒伏筆。'
+  },
+  {
+    id: '006', glyph: '⌘', theme: '犧牲', sub: '以己換彼岸',
+    tags: ['沈隨風', '選擇', '代價'],
+    passage: '沈隨風從未說過「我為你」三個字。他只是在那個岔路口選了另一條——那條更窄、更泥濘、沒有人鼓掌的路。沒有人知道那是獻祭，包括他自己。',
+    annotation: '此段是沈隨風性格核心的縮影。他的犧牲從不張揚，甚至連自我意識都是模糊的。適合在中段揭示他早年決定的場景前後使用，讓讀者在回頭時猛然意識到他一直在做的事。'
+  },
+  {
+    id: '007', glyph: '◎', theme: '起源', sub: '情感的最初形狀',
+    tags: ['兩人', '過去', '童年'],
+    passage: '最初的感情沒有名字。那時他們還小，還不懂得把心裡的東西整理成語言。只是有一天，其中一個人發現，另一個人不在的時候，風聲變得很吵。',
+    annotation: '這是整段關係的情感錨點。故事中可能沒有一個「明確的開始」，但這張牌定義了那個無法被精確回溯、卻真實存在的起源時刻。可用作卷首引言或閃回段落。'
+  },
+  {
+    id: '008', glyph: '∿', theme: '愛的語言', sub: '說了，卻沒被聽見',
+    tags: ['誤解', '溝通', '張力'],
+    passage: '他說的每一句話都是愛，只是用了對方聽不懂的語言。他以為送出去的是燈火，對方收到的卻是煙。兩個人都沒有說錯，只是詞典不同。',
+    annotation: '這張牌描述兩人關係中最核心的悲劇性張力——不是不愛，而是愛的表達方式彼此錯位。是製造情感衝突而不流於狗血的重要工具，建議在高張力對話場景後作為讀者的解讀鑰匙。'
+  },
+  {
+    id: '009', glyph: '⊗', theme: '共存詛咒', sub: '在一起，亦是傷害',
+    tags: ['兩人', '結局', '無解'],
+    passage: '不是不願意在一起，是在一起本身就是一種消耗。像兩顆星互相引力，越近越熱，最終只能選擇：燃燒，或者保持距離地發光。他們試過兩種，都留下了疤。',
+    annotation: '這是全書最高的情感密度所在。詛咒不是外力施加，而是兩人本質的碰撞結果。若故事走向開放結局，此牌可作為讀者自行詮釋的最後一塊拼圖；若走向悲劇，則是最後的注腳。'
+  }
+];
+
+let current = 0;
+
+function renderDeck() {
+  document.getElementById('deck').innerHTML = cards.map((c, i) => `
+    <div class="mini-card ${i === current ? 'active' : ''}" onclick="select(${i})">
+      <div class="num">${c.id}</div>
+      <div class="glyph">${c.glyph}</div>
+      <div class="theme">${c.theme}</div>
+      <div class="sub">${c.sub}</div>
+    </div>
+  `).join('');
+}
+
+function renderDetail() {
+  const c = cards[current];
+  document.getElementById('detail').innerHTML = `
+    <div class="detail-header">
+      <div class="detail-glyph">${c.glyph}</div>
+      <div>
+        <div class="detail-num">牌 ${c.id}</div>
+        <div class="detail-title">${c.theme}</div>
+        <div class="detail-subtitle">${c.sub}</div>
+      </div>
+    </div>
+    <div>${c.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+    <div class="section-label">段落</div>
+    <p class="passage">${c.passage}</p>
+    <div class="section-label">作者注解</div>
+    <p class="annotation">${c.annotation}</p>
+  `;
+}
+
+function select(i) { current = i; renderDeck(); renderDetail(); }
+function navigate(dir) { current = (current + dir + cards.length) % cards.length; renderDeck(); renderDetail(); }
+
+renderDeck();
+renderDetail();
+</script>
+</body>
+</html>
